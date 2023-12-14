@@ -10,7 +10,7 @@ function App() {
   const mapContainer = useRef(null);
   const [lng, setLng] = useState(-70.9);
   const [lat, setLat] = useState(42.35);
-  const [zoom, setZoom] = useState(9);
+  const [zoom, setZoom] = useState(4);
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
@@ -27,17 +27,46 @@ function App() {
       setZoom(map.current.getZoom().toFixed(2));
     });
 
-    // map.current.addSource("some id", {
-    //   type: "geojson",
-    //   data: "https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_ports.geojson",
-    // });
+    map.current.on("load", () => {
+      map.current.addSource("single-point", {
+        type: "geojson",
+        data: {
+          type: "FeatureCollection",
+          features: [
+            {
+              type: "Feature",
+              properties: {},
+              geometry: {
+                type: "Point",
+                coordinates: [-76.53063297271729, 39.18174077994108],
+              },
+            },
+          ],
+        },
+      });
 
-    // map.current.addSource("batMap", {
-    //   type: "Feature Service",
-    //   serviceUrl:
-    //     "https://services2.arcgis.com/Uq9r85Potqm3MfRV/arcgis/rest/services/biosds2825_fpu/FeatureServer/0",
-    //   sourceLastModified: "2023-11-29T18:33:44.082Z",
-    // });
+      map.current.addLayer({
+        id: "point", // the layer's ID
+        source: "single-point",
+        type: "circle", // the layer type
+        paint: {
+          "circle-radius": 10,
+          "circle-color": "#007cbf",
+        },
+      });
+
+      map.current.addLayer({
+        id: "boroughs-fill", // the layer's ID
+        source: {
+          type: "geojson",
+          data: "http://localhost:3000/data/boroughs.geojson",
+        },
+        type: "fill", // the layer type
+        paint: {
+          "fill-color": "orange",
+        },
+      });
+    });
   });
 
   return (
