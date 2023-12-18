@@ -282,6 +282,27 @@ function App() {
     ]);
   }
 
+  function mapBears(bears) {
+    map.current.addSource("black-bear-range", {
+      type: "geojson",
+      data: bears,
+    });
+
+    map.current.addLayer({
+      id: "black-bears-fill",
+      type: "fill",
+      // This property allows you to identify which `slot` in
+      // the Mapbox Standard your new layer should be placed in (`bottom`, `middle`, `top`).
+      slot: "middle",
+      source: "black-bear-range",
+      layout: {},
+      paint: {
+        "fill-color": "#522910",
+        "fill-opacity": 0.7,
+      },
+    });
+  }
+
   return (
     <div>
       <div className="sidebar">
