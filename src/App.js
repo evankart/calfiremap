@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "!mapbox-gl"; //eslint-disable-line import/no-webpack-loader-syntax
-import "./App.css";
+import ClipLoader from "react-spinners/ClipLoader";
 
 function App() {
   mapboxgl.accessToken =
@@ -8,13 +8,17 @@ function App() {
 
   const URBAN_COLOR = "#000000";
   const FIRE_COLOR = "#ff601c";
+
   const mapContainer = useRef(null);
   const map = useRef(null);
-  const [lng, setLng] = useState(-119);
-  const [lat, setLat] = useState(37.773446);
-  const [zoom, setZoom] = useState(4.5);
+
+  // map starting location and zoom
+  const [lng, setLng] = useState(-119.0184);
+  const [lat, setLat] = useState(37.7734);
+  const [zoom, setZoom] = useState(5.5);
   const [year, setYear] = useState(2020);
-  const [fireName, setFireName] = useState(null);
+
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
@@ -25,65 +29,52 @@ function App() {
       zoom: zoom,
     });
 
+    // Remove the loading animation once the map is idle (i.e. has fully finished loading)
+    map.current.once("idle", () => {
+      setLoading(false);
+    });
+
+    // Update sidebar on map move
     map.current.on("move", () => {
       setLng(map.current.getCenter().lng.toFixed(4));
       setLat(map.current.getCenter().lat.toFixed(4));
       setZoom(map.current.getZoom().toFixed(2));
     });
 
+    // URBAN AREAS
     map.current.on("style.load", () => {
+      // Get urban areas data
       map.current.addSource("urban-areas", {
         type: "geojson",
         data: "https://docs.mapbox.com/mapbox-gl-js/assets/ne_50m_urban_areas.geojson",
       });
 
+      // Add urban areas shapes to map
       map.current.addLayer({
         id: "urban-areas-fill",
         type: "fill",
-        // This property allows you to identify which `slot` in
-        // the Mapbox Standard your new layer should be placed in (`bottom`, `middle`, `top`).
         slot: "middle",
         source: "urban-areas",
         layout: {},
         paint: {
           "fill-color": URBAN_COLOR,
-          "fill-opacity": 0.4,
+          "fill-opacity": 0.15,
         },
       });
     });
 
-    // map.current.on("style.load", () => {
-    //   map.current.addSource("black-bear-range", {
-    //     type: "geojson",
-    //     data: black_bear_range,
-    //   });
-
-    //   map.current.addLayer({
-    //     id: "black-bears-fill",
-    //     type: "fill",
-    //     // This property allows you to identify which `slot` in
-    //     // the Mapbox Standard your new layer should be placed in (`bottom`, `middle`, `top`).
-    //     slot: "middle",
-    //     source: "black-bear-range",
-    //     layout: {},
-    //     paint: {
-    //       "fill-color": "#522910",
-    //       "fill-opacity": 0.7,
-    //     },
-    //   });
-    // });
-
+    // CAL FIRES
     map.current.on("style.load", () => {
+      // Get cal fires data
       map.current.addSource("cal-fires", {
         type: "geojson",
         data: "https://gis.data.cnra.ca.gov/datasets/CALFIRE-Forestry::california-fire-perimeters-1950.geojson?where=1=1&outSR=%7B%22latestWkid%22%3A3857%2C%22wkid%22%3A102100%7D",
       });
 
+      // Add cal fires shapes to map
       map.current.addLayer({
         id: "cal-fires-fill",
         type: "fill",
-        // This property allows you to identify which `slot` in
-        // the Mapbox Standard your new layer should be placed in (`bottom`, `middle`, `top`).
         slot: "middle",
         source: "cal-fires",
         layout: {},
@@ -91,185 +82,84 @@ function App() {
           "fill-color": FIRE_COLOR,
           "fill-opacity": 1,
         },
+        // Filter by the year selected in sidebar
         filter: ["==", ["get", "YEAR_"], year.toString()],
       });
     });
 
-    // map.current.on("style.load", () => {
-    //   // Add a geojson point source.
-    //   // Heatmap layers also work with a vector tile source.
-    //   map.current.addSource("earthquakes", {
-    //     type: "geojson",
-    //     data: "https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson",
-    //   });
+    // Create a popup for info (not added to map yet)
+    const popup = new mapboxgl.Popup({
+      closeButton: false,
+      closeOnClick: false,
+    });
 
-    //   map.current.addLayer(
-    //     {
-    //       id: "earthquakes-heat",
-    //       type: "heatmap",
-    //       source: "earthquakes",
-    //       maxzoom: 9,
-    //       paint: {
-    //         // Increase the heatmap weight based on frequency and property magnitude
-    //         "heatmap-weight": [
-    //           "interpolate",
-    //           ["linear"],
-    //           ["get", "mag"],
-    //           0,
-    //           0,
-    //           6,
-    //           1,
-    //         ],
-    //         // Increase the heatmap color weight weight by zoom level
-    //         // heatmap-intensity is a multiplier on top of heatmap-weight
-    //         "heatmap-intensity": [
-    //           "interpolate",
-    //           ["linear"],
-    //           ["zoom"],
-    //           0,
-    //           1,
-    //           9,
-    //           3,
-    //         ],
-    //         // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
-    //         // Begin color ramp at 0-stop with a 0-transparancy color
-    //         // to create a blur-like effect.
-    //         "heatmap-color": [
-    //           "interpolate",
-    //           ["linear"],
-    //           ["heatmap-density"],
-    //           0,
-    //           "rgba(33,102,172,0)",
-    //           0.2,
-    //           "rgb(103,169,207)",
-    //           0.4,
-    //           "#92cec8",
-    //           0.6,
-    //           "#e7bc00",
-    //           0.8,
-    //           "#f47941",
-    //           1,
-    //           "#ee544b",
-    //         ],
-    //         // Adjust the heatmap radius by zoom level
-    //         "heatmap-radius": [
-    //           "interpolate",
-    //           ["linear"],
-    //           ["zoom"],
-    //           0,
-    //           2,
-    //           9,
-    //           20,
-    //         ],
-    //         // Transition from heatmap to circle layer by zoom level
-    //         "heatmap-opacity": [
-    //           "interpolate",
-    //           ["linear"],
-    //           ["zoom"],
-    //           7,
-    //           1,
-    //           9,
-    //           0,
-    //         ],
-    //       },
-    //     },
-    //     "waterway-label"
-    //   );
+    // Do action when mouse hovers over a fire
+    map.current.on("mouseenter", "cal-fires-fill", (e) => {
+      // Change the cursor style as a UI indicator.
+      map.current.getCanvas().style.cursor = "pointer";
 
-    //   map.current.addLayer(
-    //     {
-    //       id: "earthquakes-point",
-    //       type: "circle",
-    //       source: "earthquakes",
-    //       minzoom: 7,
-    //       paint: {
-    //         // Size circle radius by earthquake magnitude and zoom level
-    //         "circle-radius": [
-    //           "interpolate",
-    //           ["linear"],
-    //           ["zoom"],
-    //           7,
-    //           ["interpolate", ["linear"], ["get", "mag"], 1, 1, 6, 4],
-    //           16,
-    //           ["interpolate", ["linear"], ["get", "mag"], 1, 5, 6, 50],
-    //         ],
-    //         // Color circle by earthquake magnitude
-    //         "circle-color": [
-    //           "interpolate",
-    //           ["linear"],
-    //           ["get", "mag"],
-    //           1,
-    //           "rgba(33,102,172,0)",
-    //           2,
-    //           "rgb(103,169,207)",
-    //           3,
-    //           "rgb(209,229,240)",
-    //           4,
-    //           "rgb(253,219,199)",
-    //           5,
-    //           "rgb(239,138,98)",
-    //           6,
-    //           "rgb(178,24,43)",
-    //         ],
-    //         "circle-stroke-color": "white",
-    //         "circle-stroke-width": 1,
-    //         // Transition from heatmap to circle layer by zoom level
-    //         "circle-opacity": ["interpolate", ["linear"], ["zoom"], 7, 0, 8, 1],
-    //       },
-    //     },
-    //     "waterway-label"
-    //   );
-    // });
+      // Get data for hovered fire
+      const fire = e.features[0].properties;
+      const FIRE_NAME = fire.FIRE_NAME;
+      const ACRES_BURNED = Math.round(fire.GIS_ACRES).toLocaleString("en-US");
+      const ALARM_DATE = new Date(fire.ALARM_DATE).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+      const CONT_DATE = new Date(fire.CONT_DATE).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
 
-    // map.current.on("style.load", () => {
-    //   map.current.addSource("boroughs", {
-    //     type: "geojson",
-    //     data: boroughs,
-    //   });
+      // Index of fire causes values
+      const FIRE_CAUSES = {
+        1: "Lightning",
+        2: "Equipment Use",
+        3: "Smoking",
+        4: "Campfire",
+        5: "Debris",
+        6: "Railroad",
+        7: "Arson",
+        8: "Playing with fire",
+        9: "Miscellaneous",
+        10: "Vehicle",
+        11: "Powerline",
+        12: "Firefighter Training",
+        13: "Non-Firefighter Training",
+        14: "Unknown",
+        15: "Structure",
+        16: "Aircraft",
+        17: "Unknown",
+        18: "Escaped Prescribed Burn",
+        19: "Campfire",
+      };
+      // Get cause of fire from value in fire data
+      const FIRE_CAUSE = FIRE_CAUSES[fire.CAUSE];
+      // Populate the popup with info about the fire and add it to map
+      popup
+        .setLngLat([e.lngLat.lng, e.lngLat.lat])
+        .setHTML(
+          `<h3>${FIRE_NAME} FIRE</h3>
+            <h4>
+              ${ALARM_DATE} - ${CONT_DATE}
+            </h4>
+            <div>Acres Burned: ${ACRES_BURNED}</div>
+            <div>Cause: ${FIRE_CAUSE}</div>
+          `
+        )
+        .addTo(map.current);
+    });
 
-    //   map.current.addLayer({
-    //     id: "boroughs-fill",
-    //     type: "fill",
-    //     // This property allows you to identify which `slot` in
-    //     // the Mapbox Standard your new layer should be placed in (`bottom`, `middle`, `top`).
-    //     slot: "middle",
-    //     source: "boroughs",
-    //     layout: {},
-    //     paint: {
-    //       "fill-color": "#fca103",
-    //       "fill-opacity": 0.4,
-    //     },
-    //   });
-    // });
-
-    // map.current.on("style.load", () => {
-    //   map.current.addSource("SF_Tides", {
-    //     type: "geojson",
-    //     data: SF_Tides,
-    //   });
-
-    //   map.current.addLayer({
-    //     id: "SF_Tides-points",
-    //     type: "circle",
-    //     // This property allows you to identify which `slot` in
-    //     // the Mapbox Standard your new layer should be placed in (`bottom`, `middle`, `top`).
-    //     slot: "middle",
-    //     source: "SF_Tides",
-    //     layout: {},
-    //     paint: {
-    //       "circle-radius": 6,
-    //       "circle-color": "#B42222",
-    //     },
-    //     filter: ["==", "$type", "Point"],
-    //   });
-    // });
+    // When moving hover away from area, return curson styling and remove popup
+    map.current.on("mouseleave", "places", () => {
+      map.getCanvas().style.cursor = "";
+      popup.remove();
+    });
   });
 
-  useEffect(() => {
-    console.log(year);
-    console.log(map.current);
-  }, [year]);
-
+  // Update map with a filter for the selected year
   function handleYearChange(e) {
     const val = e.target.id;
     let newYear;
@@ -282,29 +172,29 @@ function App() {
     ]);
   }
 
-  function mapBears(bears) {
-    map.current.addSource("black-bear-range", {
-      type: "geojson",
-      data: bears,
-    });
-
-    map.current.addLayer({
-      id: "black-bears-fill",
-      type: "fill",
-      // This property allows you to identify which `slot` in
-      // the Mapbox Standard your new layer should be placed in (`bottom`, `middle`, `top`).
-      slot: "middle",
-      source: "black-bear-range",
-      layout: {},
-      paint: {
-        "fill-color": "#522910",
-        "fill-opacity": 0.7,
-      },
-    });
-  }
-
   return (
     <div>
+      {/* Show loading animation until map is idle */}
+      {loading && (
+        <div
+          style={{
+            background: "navy",
+            height: "100vh",
+            width: "100vw",
+            opacity: 0.6,
+            position: "absolute",
+            zIndex: "1",
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <ClipLoader loading={true}></ClipLoader>
+          LOADING...
+        </div>
+      )}
+
+      {/* Sidebar */}
       <div className="sidebar">
         Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
         <div className="filter">
@@ -324,7 +214,7 @@ function App() {
           >
             +
           </button>{" "}
-          Year: {year.toString()} | Fire: {fireName}
+          Year: {year.toString()} | Fire:
         </div>
       </div>
 
