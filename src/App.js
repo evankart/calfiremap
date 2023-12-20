@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "!mapbox-gl"; //eslint-disable-line import/no-webpack-loader-syntax
-import ClipLoader from "react-spinners/ClipLoader";
+import { BounceLoader } from "react-spinners";
 
 function App() {
   mapboxgl.accessToken =
@@ -178,19 +178,17 @@ function App() {
       {loading && (
         <div
           style={{
-            background: "navy",
-            height: "100vh",
-            width: "100vw",
-            opacity: 0.6,
             position: "absolute",
             zIndex: "1",
-            textAlign: "center",
             display: "flex",
-            flexDirection: "column",
+            background: "rgba(3,42,100, 0.5)",
+            width: "100vw",
+            height: "100vh",
           }}
         >
-          <ClipLoader loading={true}></ClipLoader>
-          LOADING...
+          <div style={{ margin: "auto", alignContent: "center" }}>
+            <BounceLoader color="#36d7b7" />
+          </div>
         </div>
       )}
 
