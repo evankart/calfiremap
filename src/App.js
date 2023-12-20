@@ -20,6 +20,8 @@ function App() {
 
   const [loading, setLoading] = useState(true);
 
+  const QUERY = `https://services1.arcgis.com/jUJYIo9tSA7EHvfZ/arcgis/rest/services/California_Fire_Perimeters/FeatureServer/2/query?where=YEAR_=${year}&outFields=*&geometryType=esriGeometryPolygon&f=geojson`;
+
   useEffect(() => {
     if (map.current) return; // initialize map only once
     map.current = new mapboxgl.Map({
@@ -66,9 +68,14 @@ function App() {
     // CAL FIRES
     map.current.on("style.load", () => {
       // Get cal fires data
+      // map.current.addSource("cal-fires-full", {
+      //   type: "geojson",
+      //   data: "https://gis.data.cnra.ca.gov/datasets/CALFIRE-Forestry::california-fire-perimeters-1950.geojson?where=1=1&outSR=%7B%22latestWkid%22%3A3857%2C%22wkid%22%3A102100%7D",
+      // });
+
       map.current.addSource("cal-fires", {
         type: "geojson",
-        data: "https://gis.data.cnra.ca.gov/datasets/CALFIRE-Forestry::california-fire-perimeters-1950.geojson?where=1=1&outSR=%7B%22latestWkid%22%3A3857%2C%22wkid%22%3A102100%7D",
+        data: QUERY,
       });
 
       // Add cal fires shapes to map
@@ -157,6 +164,10 @@ function App() {
       map.getCanvas().style.cursor = "";
       popup.remove();
     });
+
+    map.current.on("click", () => {
+      console.log("click");
+    });
   });
 
   // Update map with a filter for the selected year
@@ -170,6 +181,18 @@ function App() {
       ["get", "YEAR_"],
       newYear.toString(),
     ]);
+
+    // Update map with data for the new year selected
+    map.current
+      .getSource("cal-fires")
+      .setData(
+        `https://services1.arcgis.com/jUJYIo9tSA7EHvfZ/arcgis/rest/services/California_Fire_Perimeters/FeatureServer/2/query?where=YEAR_=${newYear}&outFields=*&geometryType=esriGeometryPolygon&f=geojson`
+      );
+
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
   }
 
   return (
@@ -193,26 +216,49 @@ function App() {
       )}
 
       {/* Sidebar */}
-      <div className="sidebar">
-        Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
-        <div className="filter">
+      <div
+        className="sidebar"
+        style={{ padding: "0 10px", lineHeight: "1.15em", fontSize: "1.4em" }}
+      >
+        <div style={{ margin: "10px 5px" }}>
+          Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
+        </div>
+        <div className="filter" style={{ margin: "10px 5px" }}>
           <button
             id="-"
             onClick={(e) => {
               handleYearChange(e);
             }}
+            style={{
+              backgroundColor: "#f5f5f5",
+              color: "rgba(3,42,100, 0.5)",
+              fontWeight: "bold",
+              borderRadius: "14px",
+              boxShadow: "none",
+              border: "none",
+              padding: "4px 10px",
+            }}
           >
-            -
-          </button>
+            &lt;
+          </button>{" "}
+          Year: {year.toString()}{" "}
           <button
             id="+"
             onClick={(e) => {
               handleYearChange(e);
             }}
+            style={{
+              backgroundColor: "#f5f5f5",
+              color: "rgba(3,42,100, 0.5)",
+              fontWeight: "bold",
+              borderRadius: "14px",
+              boxShadow: "none",
+              border: "none",
+              padding: "4px 10px",
+            }}
           >
-            +
-          </button>{" "}
-          Year: {year.toString()} | Fire:
+            &gt;
+          </button>
         </div>
       </div>
 
