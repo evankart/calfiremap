@@ -18,10 +18,14 @@ function App() {
   const [lat, setLat] = useState(37.7734);
   const [zoom, setZoom] = useState(5.5);
   const [year, setYear] = useState(2020);
-
   const [loading, setLoading] = useState(true);
 
+  // Initial query
   const QUERY = `https://services1.arcgis.com/jUJYIo9tSA7EHvfZ/arcgis/rest/services/California_Fire_Perimeters/FeatureServer/2/query?where=YEAR_=${year}&outFields=*&geometryType=esriGeometryPolygon&f=geojson`;
+
+  function queryByYear(year) {
+    return `https://services1.arcgis.com/jUJYIo9tSA7EHvfZ/arcgis/rest/services/California_Fire_Perimeters/FeatureServer/2/query?where=YEAR_=${year}&outFields=*&geometryType=esriGeometryPolygon&f=geojson`;
+  }
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
@@ -76,7 +80,7 @@ function App() {
 
       map.current.addSource("cal-fires", {
         type: "geojson",
-        data: QUERY,
+        data: queryByYear(2020),
       });
 
       // Add cal fires shapes to map
@@ -184,16 +188,13 @@ function App() {
     ]);
 
     // Update map with data for the new year selected
-    map.current
-      .getSource("cal-fires")
-      .setData(
-        `https://services1.arcgis.com/jUJYIo9tSA7EHvfZ/arcgis/rest/services/California_Fire_Perimeters/FeatureServer/2/query?where=YEAR_=${newYear}&outFields=*&geometryType=esriGeometryPolygon&f=geojson`
-      );
+    map.current.getSource("cal-fires").setData(queryByYear(newYear));
 
+    // Show loading animation until map is idle
     setLoading(true);
-    setTimeout(() => {
+    map.current.once("idle", () => {
       setLoading(false);
-    }, 2000);
+    });
   }
 
   return (
