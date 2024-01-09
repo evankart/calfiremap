@@ -35,11 +35,15 @@ function App() {
   }
 
   function refreshAcres() {
+    let fireArray = [];
     let allFeatures = map.current.querySourceFeatures("cal-fires");
     setAcresBurned(0);
     let acresBurnedCount = 0;
     allFeatures.forEach((feature) => {
-      acresBurnedCount += feature.properties.GIS_ACRES;
+      if (!fireArray.includes(feature.properties.FIRE_NAME)) {
+        fireArray.push(feature.properties.FIRE_NAME);
+        acresBurnedCount += feature.properties.GIS_ACRES;
+      }
     });
     acresBurnedCount = acresBurnedCount.toLocaleString(undefined, {
       minimumFractionDigits: 0,
@@ -134,6 +138,7 @@ function App() {
 
       // Get data for hovered fire
       const fire = e.features[0].properties;
+      const fireId = e.features[0].properties.id;
       const FIRE_NAME = fire.FIRE_NAME;
       const ACRES_BURNED = Math.round(fire.GIS_ACRES).toLocaleString("en-US");
       const ALARM_DATE = new Date(fire.ALARM_DATE).toLocaleDateString("en-US", {
@@ -145,6 +150,18 @@ function App() {
         year: "numeric",
         month: "short",
         day: "numeric",
+      });
+
+      // Add a new layer for the hovered feature with a different fill color
+      map.current.addLayer({
+        id: "hover",
+        type: "fill",
+        source: "cal-fires",
+        paint: {
+          "fill-color": "#e11e1e          ",
+          "fill-opacity": 1,
+        },
+        filter: ["==", "FIRE_NAME", FIRE_NAME],
       });
 
       // Index of fire causes values
@@ -187,13 +204,14 @@ function App() {
     });
 
     // When moving hover away from area, return curson styling and remove popup
-    map.current.on("mouseleave", "places", () => {
-      map.getCanvas().style.cursor = "";
+    map.current.on("mouseleave", "cal-fires-fill", () => {
+      map.current.getCanvas().style.cursor = "";
       popup.remove();
-    });
 
-    map.current.on("click", () => {
-      console.log("click");
+      // remove hover color
+      if (map.current.getLayer("hover")) {
+        map.current.removeLayer("hover");
+      }
     });
   });
 
@@ -225,6 +243,27 @@ function App() {
       refreshAcres();
     });
   }
+
+  let FULL_DATASET;
+  async function fetchFullData() {
+    fetch(
+      "https://gis.data.cnra.ca.gov/datasets/CALFIRE-Forestry::california-fire-perimeters-1950.geojson?where=1=1&outSR=%7B%22latestWkid%22%3A3857%2C%22wkid%22%3A102100%7D"
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        FULL_DATASET = data;
+        console.log("fetched data: ", FULL_DATASET);
+        console.log(
+          `${FULL_DATASET.features.length.toLocaleString()} fires since 1950`
+        );
+        // FULL_DATASET.features.forEach((feature) => {
+        //   console.log(feature.properties.CAUSE);
+        // });
+      })
+      .catch((error) => console.error("Error:", error));
+  }
+
+  fetchFullData();
 
   return (
     <div>
@@ -314,6 +353,17 @@ function App() {
           >
             &gt;
           </button>
+        </div>
+        <div style={{ fontSize: "0.8em" }}>
+          {" "}
+          Data provided by the{" "}
+          <a
+            href="https://gis.data.cnra.ca.gov/datasets/CALFIRE-Forestry::california-fire-perimeters-1950/about"
+            style={{ color: "white" }}
+          >
+            California Department of Forestry and Fire Protection
+          </a>
+          .
         </div>
       </div>
 
