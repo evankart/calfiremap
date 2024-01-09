@@ -2,11 +2,11 @@
 
 ## Description
 
-Wildfires in the state of California.
+Map of wildfires in the state of California since 1950. Data provided by the [California Department of Forestry and Fire Protection](https://gis.data.cnra.ca.gov/datasets/CALFIRE-Forestry::california-fire-perimeters-1950/about).
 
 ## Installation
 
-Provide steps on how to install your project locally.
+How to install the project locally.
 
 ```bash
 git clone https://github.com/evankart/calfiremap
