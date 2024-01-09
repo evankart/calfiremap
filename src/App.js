@@ -19,12 +19,33 @@ function App() {
   const [zoom, setZoom] = useState(5.5);
   const [year, setYear] = useState(2020);
   const [loading, setLoading] = useState(true);
+  const [acresBurned, setAcresBurned] = useState(0);
 
-  // Initial query
-  const QUERY = `https://services1.arcgis.com/jUJYIo9tSA7EHvfZ/arcgis/rest/services/California_Fire_Perimeters/FeatureServer/2/query?where=YEAR_=${year}&outFields=*&geometryType=esriGeometryPolygon&f=geojson`;
+  // Array of years to populate dropdown in sidebar
+  const startYear = 1950;
+  const currentYear = new Date().getFullYear();
+  const years = Array.from(
+    { length: currentYear - startYear + 1 },
+    (_, i) => currentYear - i
+  );
 
+  // Creates query link for cal fire data for a given year
   function queryByYear(year) {
     return `https://services1.arcgis.com/jUJYIo9tSA7EHvfZ/arcgis/rest/services/California_Fire_Perimeters/FeatureServer/2/query?where=YEAR_=${year}&outFields=*&geometryType=esriGeometryPolygon&f=geojson`;
+  }
+
+  function refreshAcres() {
+    let allFeatures = map.current.querySourceFeatures("cal-fires");
+    setAcresBurned(0);
+    let acresBurnedCount = 0;
+    allFeatures.forEach((feature) => {
+      acresBurnedCount += feature.properties.GIS_ACRES;
+    });
+    acresBurnedCount = acresBurnedCount.toLocaleString(undefined, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }); // format as a number with commas and two decimal places
+    setAcresBurned(acresBurnedCount);
   }
 
   useEffect(() => {
@@ -39,6 +60,7 @@ function App() {
     // Remove the loading animation once the map is idle (i.e. has fully finished loading)
     map.current.once("idle", () => {
       setLoading(false);
+      refreshAcres();
     });
 
     // Update sidebar on map move
@@ -179,7 +201,13 @@ function App() {
   function handleYearChange(e) {
     const val = e.target.id;
     let newYear;
-    val === "-" ? (newYear = year - 1) : (newYear = year + 1);
+    if (val === "-") {
+      newYear = year - 1;
+    } else if (val === "+") {
+      newYear = year + 1;
+    } else if (val === "year") {
+      newYear = e.target.value;
+    }
     setYear(newYear);
     map.current.setFilter("cal-fires-fill", [
       "==",
@@ -194,6 +222,7 @@ function App() {
     setLoading(true);
     map.current.once("idle", () => {
       setLoading(false);
+      refreshAcres();
     });
   }
 
@@ -223,7 +252,8 @@ function App() {
         style={{ padding: "0 10px", lineHeight: "1.15em", fontSize: "1.4em" }}
       >
         <div style={{ margin: "10px 5px" }}>
-          Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
+          Longitude: {lng} | Latitude: {lat} | Zoom: {zoom} | {acresBurned}{" "}
+          Acres Burned
         </div>
         <div className="filter" style={{ margin: "10px 5px" }}>
           <button
@@ -242,8 +272,31 @@ function App() {
             }}
           >
             &lt;
-          </button>{" "}
-          Year: {year.toString()}{" "}
+          </button>
+          {/* dropdown for selecting the year */}
+          <select
+            id="year"
+            onChange={(e) => {
+              handleYearChange(e);
+            }}
+            value={year}
+            style={{
+              backgroundColor: "#f5f5f5",
+              color: "rgba(3,42,100, 0.5)",
+              fontWeight: "bold",
+              borderRadius: "14px",
+              boxShadow: "none",
+              border: "none",
+              padding: "4px 10px",
+              margin: "0 8px",
+            }}
+          >
+            {years.map((year, index) => (
+              <option key={index} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
           <button
             id="+"
             onClick={(e) => {
