@@ -351,9 +351,6 @@ function App() {
           maxWidth: "375px",
         }}
       >
-        <div style={{ margin: "10px 5px" }}>
-          Lng: {lng} | Lat: {lat} | Zoom: {zoom}
-        </div>
         <div style={{ margin: "10px 5px" }}>{acresBurned} Acres Burned</div>
         <div className="filter" style={{ margin: "10px 5px" }}>
           <button
