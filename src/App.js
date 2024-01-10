@@ -13,6 +13,8 @@ function App() {
   const mapContainer = useRef(null);
   const map = useRef(null);
 
+  let isDataDownloaded = false;
+
   // map starting location and zoom
   const [lng, setLng] = useState(-119.0184);
   const [lat, setLat] = useState(37.7734);
@@ -53,6 +55,7 @@ function App() {
   }
 
   useEffect(() => {
+    console.log("run");
     if (map.current) return; // initialize map only once
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
@@ -118,7 +121,8 @@ function App() {
         layout: {},
         paint: {
           "fill-color": FIRE_COLOR,
-          "fill-opacity": 1,
+          "fill-opacity": 0,
+          "fill-opacity-transition": { duration: 500 },
         },
         // Filter by the year selected in sidebar
         filter: ["==", ["get", "YEAR_"], year.toString()],
@@ -138,7 +142,6 @@ function App() {
 
       // Get data for hovered fire
       const fire = e.features[0].properties;
-      const fireId = e.features[0].properties.id;
       const FIRE_NAME = fire.FIRE_NAME;
       const ACRES_BURNED = Math.round(fire.GIS_ACRES).toLocaleString("en-US");
       const ALARM_DATE = new Date(fire.ALARM_DATE).toLocaleDateString("en-US", {
@@ -213,57 +216,90 @@ function App() {
         map.current.removeLayer("hover");
       }
     });
+
+    map.current.on("click", () => {
+      fetchFullData();
+    });
+
+    map.current.once("idle", () => {
+      // Fade out
+      map.current.setPaintProperty("cal-fires-fill", "fill-opacity", 0.8);
+    });
   });
 
-  // Update map with a filter for the selected year
-  function handleYearChange(e) {
-    const val = e.target.id;
-    let newYear;
-    if (val === "-") {
-      newYear = year - 1;
-    } else if (val === "+") {
-      newYear = year + 1;
-    } else if (val === "year") {
-      newYear = e.target.value;
-    }
-    setYear(newYear);
-    map.current.setFilter("cal-fires-fill", [
-      "==",
-      ["get", "YEAR_"],
-      newYear.toString(),
-    ]);
-
-    // Update map with data for the new year selected
-    map.current.getSource("cal-fires").setData(queryByYear(newYear));
-
-    // Show loading animation until map is idle
-    setLoading(true);
-    map.current.once("idle", () => {
-      setLoading(false);
-      refreshAcres();
-    });
-  }
-
+  // Fetch full dataset after the map has initially loaded
   let FULL_DATASET;
   async function fetchFullData() {
-    fetch(
+    console.log("downloading full dataset...");
+    await fetch(
       "https://gis.data.cnra.ca.gov/datasets/CALFIRE-Forestry::california-fire-perimeters-1950.geojson?where=1=1&outSR=%7B%22latestWkid%22%3A3857%2C%22wkid%22%3A102100%7D"
     )
       .then((response) => response.json())
       .then((data) => {
         FULL_DATASET = data;
-        console.log("fetched data: ", FULL_DATASET);
+        console.log("full dataset successfully downloaded: ", FULL_DATASET);
+        isDataDownloaded = true;
         console.log(
           `${FULL_DATASET.features.length.toLocaleString()} fires since 1950`
         );
         // FULL_DATASET.features.forEach((feature) => {
         //   console.log(feature.properties.CAUSE);
         // });
+        if (map.current) {
+          map.current.getSource("cal-fires").setData(FULL_DATASET);
+          console.log("data source updated to full dataset");
+        }
       })
       .catch((error) => console.error("Error:", error));
   }
 
-  fetchFullData();
+  // Update map with a filter for the selected year
+  function handleYearChange(e) {
+    // Fade out
+    map.current.setPaintProperty("cal-fires-fill", "fill-opacity", 0);
+
+    const targetId = e.target.id;
+    let newYear;
+    if (targetId === "-") {
+      newYear = year - 1;
+    } else if (targetId === "+") {
+      newYear = year + 1;
+    } else if (targetId === "year") {
+      console.log(e);
+      newYear = e.target.value;
+    }
+    setYear(newYear);
+
+    setTimeout(() => {
+      // Update map with data for the new year selected
+      if (isDataDownloaded === false) {
+        map.current.getSource("cal-fires").setData(queryByYear(newYear));
+      }
+
+      map.current.setFilter("cal-fires-fill", [
+        "==",
+        ["get", "YEAR_"],
+        newYear.toString(),
+      ]);
+
+      map.current.once("idle", () => {
+        // Fade in after data is updated
+        map.current.setPaintProperty("cal-fires-fill", "fill-opacity", 0.8);
+      });
+
+      // Show loading animation until map is idle
+      setLoading(true);
+      function checkIfLayerIsPainted() {
+        if (map.current.isSourceLoaded("cal-fires") && map.current.loaded()) {
+          setLoading(false);
+          refreshAcres();
+          map.current.off("render", checkIfLayerIsPainted);
+        }
+      }
+
+      map.current.on("render", checkIfLayerIsPainted);
+    }, 750);
+  }
 
   return (
     <div>
