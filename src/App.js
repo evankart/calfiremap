@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "!mapbox-gl"; //eslint-disable-line import/no-webpack-loader-syntax
 import { BounceLoader } from "react-spinners";
-import Sidebar from "./components/sidebar";
 
 function App() {
   mapboxgl.accessToken =
@@ -16,8 +15,8 @@ function App() {
   let isDataDownloaded = false;
 
   // map starting location and zoom
-  const [lng, setLng] = useState(-119.0184);
-  const [lat, setLat] = useState(37.7734);
+  const [lng, setLng] = useState(-120.120412);
+  const [lat, setLat] = useState(37.773403);
   const [zoom, setZoom] = useState(5.5);
   const [year, setYear] = useState(2020);
   const [loading, setLoading] = useState(true);
@@ -72,9 +71,9 @@ function App() {
 
     // Update sidebar on map move
     map.current.on("move", () => {
-      setLng(map.current.getCenter().lng.toFixed(4));
-      setLat(map.current.getCenter().lat.toFixed(4));
-      setZoom(map.current.getZoom().toFixed(2));
+      setLng(map.current.getCenter().lng.toFixed(6));
+      setLat(map.current.getCenter().lat.toFixed(6));
+      setZoom(map.current.getZoom().toFixed(1));
     });
 
     // URBAN AREAS
@@ -193,7 +192,7 @@ function App() {
       const FIRE_CAUSE = FIRE_CAUSES[fire.CAUSE];
       // Populate the popup with info about the fire and add it to map
       popup
-        .setLngLat([e.lngLat.lng, e.lngLat.lat])
+        .setLngLat([e.lngLat.lng.toFixed(6), e.lngLat.lat.toFixed(6)])
         .setHTML(
           `<h3>${FIRE_NAME} FIRE</h3>
             <h4>
@@ -321,15 +320,41 @@ function App() {
         </div>
       )}
 
+      <div
+        className="location"
+        style={{
+          padding: "0 10px",
+          lineHeight: "1rem",
+          fontSize: "0.85rem",
+          maxWidth: "350px",
+          position: "absolute",
+          bottom: "30px",
+          right: " 10px",
+          backgroundColor: "rgba(35, 55, 75,0.9)",
+          color: "white",
+          borderRadius: "4px",
+          zIndex: "2",
+        }}
+      >
+        <div style={{ margin: "10px 5px" }}>
+          Lng: {lng} | Lat: {lat} | Zoom: {zoom}
+        </div>
+      </div>
+
       {/* Sidebar */}
       <div
         className="sidebar"
-        style={{ padding: "0 10px", lineHeight: "1.15em", fontSize: "1.4em" }}
+        style={{
+          padding: "0 10px",
+          lineHeight: "1.15em",
+          fontSize: "0.9rem",
+          maxWidth: "375px",
+        }}
       >
         <div style={{ margin: "10px 5px" }}>
-          Longitude: {lng} | Latitude: {lat} | Zoom: {zoom} | {acresBurned}{" "}
-          Acres Burned
+          Lng: {lng} | Lat: {lat} | Zoom: {zoom}
         </div>
+        <div style={{ margin: "10px 5px" }}>{acresBurned} Acres Burned</div>
         <div className="filter" style={{ margin: "10px 5px" }}>
           <button
             id="-"
