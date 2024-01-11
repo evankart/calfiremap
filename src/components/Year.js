@@ -1,39 +1,15 @@
+import Button from "../components/Button";
 const Year = ({ year, years, handleYearChange }) => {
   return (
     <div
-      className="filter position-absolute"
+      className="filter position-absolute ms-3 mt-3 z-1 p-2 rounded-2 d-flex align-items-center"
       style={{
-        // position: "absolute",
-        top: "10px",
-        left: "20px",
-        margin: "10px 5px",
-        zIndex: "1",
         backgroundColor: "rgba(35, 55, 75,0.1)",
-        padding: "8px 10px",
-        borderRadius: "8px",
-        fontSize: "3rem",
-        display: "flex",
-        alignItems: "center",
       }}
     >
-      <button
-        id="-"
-        onClick={(e) => {
-          handleYearChange(e);
-        }}
-        style={{
-          backgroundColor: "#f5f5f5",
-          color: "rgba(3,42,100, 0.7)",
-          fontWeight: "bold",
-          borderRadius: "14px",
-          boxShadow: "none",
-          border: "none",
-          padding: "4px 10px",
-          fontSize: "2rem",
-        }}
-      >
-        &lt;
-      </button>
+      {/* Decrease year by one */}
+      <Button btnText="&lt;" btnId="-" handleYearChange={handleYearChange} />
+
       {/* dropdown for selecting the year */}
       <select
         id="year"
@@ -42,16 +18,10 @@ const Year = ({ year, years, handleYearChange }) => {
         }}
         value={year}
         style={{
-          backgroundColor: "#f5f5f5",
           color: "rgba(3,42,100, 0.7)",
-          fontWeight: "bold",
-          borderRadius: "14px",
-          boxShadow: "none",
-          border: "none",
-          padding: "4px 10px",
-          margin: "0 8px",
-          fontSize: "3rem",
+          fontSize: "2.5rem",
         }}
+        className="bg-light fw-bold rounded-3 border-0 px-2 mx-2"
       >
         {years.map((year, index) => (
           <option key={index} value={year}>
@@ -59,24 +29,9 @@ const Year = ({ year, years, handleYearChange }) => {
           </option>
         ))}
       </select>
-      <button
-        id="+"
-        onClick={(e) => {
-          handleYearChange(e);
-        }}
-        style={{
-          backgroundColor: "#f5f5f5",
-          color: "rgba(3,42,100, 0.7)",
-          fontWeight: "bold",
-          borderRadius: "14px",
-          boxShadow: "none",
-          border: "none",
-          padding: "4px 10px",
-          fontSize: "2rem",
-        }}
-      >
-        &gt;
-      </button>
+
+      {/* Increase year by one */}
+      <Button btnText="&gt;" btnId="+" handleYearChange={handleYearChange} />
     </div>
   );
 };
