@@ -18,23 +18,13 @@ code {
 
 .sidebar {
   background-color: rgb(35 55 75 / 90%);
-  color: #fff;
-  padding: 6px 12px;
-  font-family: monospace;
-  z-index: 1;
-  position: absolute;
-  bottom: 30px;
-  left: 10px;
-  margin: 12px;
-  border-radius: 4px;
-}
-
-.location {
-  background-color: rgb(35 55 75 / 90%);
-  color: #fff;
-  padding: 6px 12px;
-  font-family: monospace;
-  z-index: 1;
-  margin: 12px;
-  border-radius: 4px;
+  /* color: #fff; */
+  /* padding: 6px 12px; */
+  /* font-family: monospace; */
+  /* z-index: 1; */
+  /* position: absolute; */
+  /* bottom: 30px;
+  left: 10px; */
+  /* margin: 12px; */
+  /* border-radius: 4px; */
 }

@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "!mapbox-gl"; //eslint-disable-line import/no-webpack-loader-syntax
 import { BounceLoader } from "react-spinners";
 import Sidebar from "./components/Sidebar.js";
-import Location from "./components/Location.js";
 import Year from "./components/Year.js";
 
 function App() {
@@ -14,11 +13,26 @@ function App() {
   const map = useRef(null);
 
   let isDataDownloaded = false;
+  let initialZoom;
+  let initialLat;
+  let initialLng;
+
+  let mq = window.matchMedia("(min-width: 420px)");
+
+  if (mq.matches) {
+    initialZoom = 5.2; //set map zoom level for desktop size
+    initialLat = 37.476313; //set lat for desktop size
+    initialLng = -120.82628; //set lng level for desktop size
+  } else {
+    initialZoom = 4.7; //set map zoom level for mobile size
+    initialLat = 35.955012; //set lat for mobile size
+    initialLng = -119.107817; //set lng level for mobile size
+  }
 
   // map starting location and zoom
-  const [lng, setLng] = useState(-120.120412);
-  const [lat, setLat] = useState(37.773403);
-  const [zoom, setZoom] = useState(5.5);
+  const [lng, setLng] = useState(initialLng);
+  const [lat, setLat] = useState(initialLat);
+  const [zoom, setZoom] = useState(initialZoom);
   const [year, setYear] = useState(2020);
   const [loading, setLoading] = useState(true);
   const [acresBurned, setAcresBurned] = useState(0);
@@ -323,13 +337,14 @@ function App() {
 
       <Year year={year} years={years} handleYearChange={handleYearChange} />
 
-      <Location lat={lat} lng={lng} zoom={zoom} />
-
       <Sidebar
         year={year}
         years={years}
         handleYearChange={handleYearChange}
         acresBurned={acresBurned}
+        lat={lat}
+        lng={lng}
+        zoom={zoom}
       />
 
       <div ref={mapContainer} className="map-container" />
