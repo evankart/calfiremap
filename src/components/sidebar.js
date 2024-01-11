@@ -5,7 +5,7 @@ const Sidebar = ({ year, acresBurned, lat, lng, zoom }) => {
         <div className="text-center mb-2">
           Lng: {lng} | Lat: {lat} | Zoom: {zoom}
         </div>
-        <div className="fs-5 mb-2">
+        <div className="fs-6 mb-2">
           {acresBurned} Acres Burned in {year}
         </div>
 
