@@ -3,11 +3,10 @@ import mapboxgl from "!mapbox-gl"; //eslint-disable-line import/no-webpack-loade
 import { BounceLoader } from "react-spinners";
 import Sidebar from "./components/Sidebar.js";
 import Location from "./components/Location.js";
+import Year from "./components/Year.js";
 
 function App() {
-  mapboxgl.accessToken =
-    "pk.eyJ1IjoiZXZhbmthcnQiLCJhIjoiY2xxMnkzaG83MDY4aDJpbW54b2huZmNxOCJ9.4InAygCOj9qFzofUUuu-FA";
-
+  mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_API_KEY;
   const URBAN_COLOR = "#000000";
   const FIRE_COLOR = "#ff601c";
 
@@ -321,6 +320,8 @@ function App() {
           </div>
         </div>
       )}
+
+      <Year year={year} years={years} handleYearChange={handleYearChange} />
 
       <Location lat={lat} lng={lng} zoom={zoom} />
 
