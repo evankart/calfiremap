@@ -1,4 +1,4 @@
-const Sidebar = ({ year, acresBurned, lat, lng, zoom }) => {
+const Menu = ({ year, acresBurned, lat, lng, zoom }) => {
   return (
     <div>
       <div className="sidebar text-white font-monospace z-1 position-absolute bottom-0 mb-5 rounded-2 fs-6 px-3 py-2 mx-3">
@@ -25,4 +25,4 @@ const Sidebar = ({ year, acresBurned, lat, lng, zoom }) => {
   );
 };
 
-export default Sidebar;
+export default Menu;

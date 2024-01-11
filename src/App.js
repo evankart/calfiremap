@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "!mapbox-gl"; //eslint-disable-line import/no-webpack-loader-syntax
 import { BounceLoader } from "react-spinners";
-import Sidebar from "./components/Sidebar.js";
+import Menu from "./components/Menu.js";
 import Year from "./components/Year.js";
 
 function App() {
@@ -337,7 +337,7 @@ function App() {
 
       <Year year={year} years={years} handleYearChange={handleYearChange} />
 
-      <Sidebar
+      <Menu
         year={year}
         years={years}
         handleYearChange={handleYearChange}
