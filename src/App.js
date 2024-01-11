@@ -1,7 +1,9 @@
 import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "!mapbox-gl"; //eslint-disable-line import/no-webpack-loader-syntax
 import { BounceLoader } from "react-spinners";
-import Sidebar from "./components/sidebar";
+import Sidebar from "./components/Sidebar.js";
+import Location from "./components/Location.js";
+
 function App() {
   mapboxgl.accessToken =
     "pk.eyJ1IjoiZXZhbmthcnQiLCJhIjoiY2xxMnkzaG83MDY4aDJpbW54b2huZmNxOCJ9.4InAygCOj9qFzofUUuu-FA";
@@ -320,26 +322,7 @@ function App() {
         </div>
       )}
 
-      <div
-        className="location"
-        style={{
-          padding: "0 10px",
-          lineHeight: "1rem",
-          fontSize: "0.85rem",
-          maxWidth: "350px",
-          position: "absolute",
-          bottom: "30px",
-          right: " 10px",
-          backgroundColor: "rgba(35, 55, 75,0.9)",
-          color: "white",
-          borderRadius: "4px",
-          zIndex: "2",
-        }}
-      >
-        <div style={{ margin: "10px 5px" }}>
-          Lng: {lng} | Lat: {lat} | Zoom: {zoom}
-        </div>
-      </div>
+      <Location lat={lat} lng={lng} zoom={zoom} />
 
       <Sidebar
         year={year}
