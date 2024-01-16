@@ -6,7 +6,7 @@ import Year from "./components/Year.js";
 
 function App() {
   mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_API_KEY;
-  const URBAN_COLOR = "#000000";
+  const URBAN_COLOR = "#5b8fcf";
   const FIRE_COLOR = "#ff601c";
 
   const mapContainer = useRef(null);
@@ -231,13 +231,14 @@ function App() {
       }
     });
 
-    map.current.on("click", () => {
-      fetchFullData();
-    });
+    map.current.on("click", () => {});
 
     map.current.once("idle", () => {
       // Fade out
       map.current.setPaintProperty("cal-fires-fill", "fill-opacity", 0.8);
+
+      // Fetch full dataset after the map has initially loaded
+      fetchFullData();
     });
   });
 
