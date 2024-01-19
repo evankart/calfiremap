@@ -19,7 +19,7 @@ const Menu = ({
       console.log(newYear);
       setYear(newYear);
       handleYearChange(newYear);
-    }, 2000);
+    }, 1000);
   }
 
   function stopAnimation() {

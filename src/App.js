@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "!mapbox-gl"; //eslint-disable-line import/no-webpack-loader-syntax
+import { simplify } from "simplify-geojson";
 import { BounceLoader } from "react-spinners";
 import Menu from "./components/Menu.js";
 import Year from "./components/Year.js";
@@ -69,7 +70,6 @@ function App() {
   }
 
   useEffect(() => {
-    console.log("run");
     if (map.current) return; // initialize map only once
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
@@ -136,7 +136,7 @@ function App() {
         paint: {
           "fill-color": FIRE_COLOR,
           "fill-opacity": 0,
-          "fill-opacity-transition": { duration: 500 },
+          "fill-opacity-transition": { duration: 0 },
         },
         // Filter by the year selected in sidebar
         filter: ["==", ["get", "YEAR_"], year.toString()],
@@ -251,12 +251,15 @@ function App() {
     )
       .then((response) => response.json())
       .then((data) => {
-        FULL_DATASET = data;
+        const geojson = data.features;
+        FULL_DATASET = simplify(geojson, 0.1);
+        // FULL_DATASET = data;
+
         console.log("full dataset successfully downloaded: ", FULL_DATASET);
         isDataDownloaded = true;
-        console.log(
-          `${FULL_DATASET.features.length.toLocaleString()} fires since 1950`
-        );
+        // console.log(
+        //   `${FULL_DATASET.features.length.toLocaleString()} fires since 1950`
+        // );
         // FULL_DATASET.features.forEach((feature) => {
         //   console.log(feature.properties.CAUSE);
         // });
@@ -291,35 +294,35 @@ function App() {
 
     setYear(newYear);
 
-    setTimeout(() => {
-      // Update map with data for the new year selected
-      if (isDataDownloaded === false) {
-        map.current.getSource("cal-fires").setData(queryByYear(newYear));
+    // setTimeout(() => {
+    // Update map with data for the new year selected
+    if (isDataDownloaded === false) {
+      map.current.getSource("cal-fires").setData(queryByYear(newYear));
+    }
+
+    map.current.setFilter("cal-fires-fill", [
+      "==",
+      ["get", "YEAR_"],
+      newYear.toString(),
+    ]);
+
+    // map.current.once("idle", () => {
+    // Fade in after data is updated
+    map.current.setPaintProperty("cal-fires-fill", "fill-opacity", 0.8);
+    // });
+
+    // Show loading animation until map is idle
+    // setLoading(true);
+    function checkIfLayerIsPainted() {
+      if (map.current.isSourceLoaded("cal-fires") && map.current.loaded()) {
+        setLoading(false);
+        refreshAcres();
+        map.current.off("render", checkIfLayerIsPainted);
       }
+    }
 
-      map.current.setFilter("cal-fires-fill", [
-        "==",
-        ["get", "YEAR_"],
-        newYear.toString(),
-      ]);
-
-      map.current.once("idle", () => {
-        // Fade in after data is updated
-        map.current.setPaintProperty("cal-fires-fill", "fill-opacity", 0.8);
-      });
-
-      // Show loading animation until map is idle
-      setLoading(true);
-      function checkIfLayerIsPainted() {
-        if (map.current.isSourceLoaded("cal-fires") && map.current.loaded()) {
-          setLoading(false);
-          refreshAcres();
-          map.current.off("render", checkIfLayerIsPainted);
-        }
-      }
-
-      map.current.on("render", checkIfLayerIsPainted);
-    }, 750);
+    map.current.on("render", checkIfLayerIsPainted);
+    // }, 0);
   }
 
   return (
