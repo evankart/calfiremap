@@ -1,3 +1,5 @@
+import { useRef } from "react";
+
 const Menu = ({
   year,
   setYear,
@@ -7,20 +9,25 @@ const Menu = ({
   lng,
   zoom,
 }) => {
-  function animateMap() {
-    let counter = 0;
-    let newYear = year;
+  const animationInterval = useRef(null);
 
-    setInterval(() => {
-      counter -= 1;
-      console.log(counter);
+  function animateMap() {
+    console.log("animate map");
+    let newYear = year;
+    animationInterval.current = setInterval(() => {
       newYear -= 1;
       console.log(newYear);
       setYear(newYear);
       handleYearChange(newYear);
-
-      counter = 0;
     }, 2000);
+  }
+
+  function stopAnimation() {
+    console.log("stop animation");
+    if (animationInterval.current) {
+      clearInterval(animationInterval.current);
+      animationInterval.current = null;
+    }
   }
 
   return (
@@ -45,6 +52,7 @@ const Menu = ({
           .
         </div>
         <button onClick={animateMap}>Animate Map</button>
+        <button onClick={stopAnimation}>Stop Animation</button>
       </div>
     </div>
   );
