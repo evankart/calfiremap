@@ -273,16 +273,22 @@ function App() {
     // Fade out
     map.current.setPaintProperty("cal-fires-fill", "fill-opacity", 0);
 
-    const targetId = e.target.id;
     let newYear;
-    if (targetId === "-") {
-      newYear = year - 1;
-    } else if (targetId === "+") {
-      newYear = year + 1;
-    } else if (targetId === "year") {
-      console.log(e);
-      newYear = e.target.value;
+
+    if (e.target) {
+      const targetId = e.target.id;
+      if (targetId === "-") {
+        newYear = year - 1;
+      } else if (targetId === "+") {
+        newYear = year + 1;
+      } else if (targetId === "year") {
+        console.log(e);
+        newYear = e.target.value;
+      }
+    } else {
+      newYear = e;
     }
+
     setYear(newYear);
 
     setTimeout(() => {
@@ -340,6 +346,7 @@ function App() {
 
       <Menu
         year={year}
+        setYear={setYear}
         years={years}
         handleYearChange={handleYearChange}
         acresBurned={acresBurned}

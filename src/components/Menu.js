@@ -1,4 +1,28 @@
-const Menu = ({ year, acresBurned, lat, lng, zoom }) => {
+const Menu = ({
+  year,
+  setYear,
+  handleYearChange,
+  acresBurned,
+  lat,
+  lng,
+  zoom,
+}) => {
+  function animateMap() {
+    let counter = 0;
+    let newYear = year;
+
+    setInterval(() => {
+      counter -= 1;
+      console.log(counter);
+      newYear -= 1;
+      console.log(newYear);
+      setYear(newYear);
+      handleYearChange(newYear);
+
+      counter = 0;
+    }, 2000);
+  }
+
   return (
     <div>
       <div className="sidebar text-white font-monospace z-1 position-absolute bottom-0 mb-5 rounded-2 fs-6 px-3 py-2 mx-3">
@@ -20,6 +44,7 @@ const Menu = ({ year, acresBurned, lat, lng, zoom }) => {
           </a>
           .
         </div>
+        <button onClick={animateMap}>Animate Map</button>
       </div>
     </div>
   );
