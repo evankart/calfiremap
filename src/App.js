@@ -350,6 +350,7 @@ function App() {
         lat={lat}
         lng={lng}
         zoom={zoom}
+        map={map}
       />
 
       <div ref={mapContainer} className="map-container" />
