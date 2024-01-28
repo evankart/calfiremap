@@ -13,12 +13,19 @@ Cal Firemap is designed to provide context and a sense of scale to climate-influ
 
 This app is publicly hosted at [calfiremap.vercel.app](https://calfiremap.vercel.app).
 
-
-To run the project locally:
+## How to Contribute
+### Clone the repo
 ```bash
 git clone https://github.com/evankart/calfiremap
 cd calfiremap
+```
+
+### Run the Project
+```bash
 npm install
 npm start
 ```
+
+### Submit a Pull Request
+If you'd like to contribute, please fork the repository and open a pull request.
 
