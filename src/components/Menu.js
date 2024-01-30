@@ -65,8 +65,8 @@ const Menu = ({
           </a>
           .
         </div>
-        <button onClick={animateMap}>Animate Map</button>
-        <button onClick={stopAnimation}>Stop Animation</button>
+        {/* <button onClick={animateMap}>Animate Map</button>
+        <button onClick={stopAnimation}>Stop Animation</button> */}
       </div>
     </div>
   );
