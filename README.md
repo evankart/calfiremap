@@ -17,7 +17,6 @@ This app is publicly hosted at [calfiremap.vercel.app](https://calfiremap.vercel
 ## How to Contribute
 
 ### Clone the repo
-
 ```bash
 git clone https://github.com/evankart/calfiremap
 cd calfiremap
