@@ -65,8 +65,8 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [acresBurned, setAcresBurned] = useState(0);
 
-  // const dataSources = getDataSources(year);
-  const dataSources = wildlifeRangeDataSources;
+  const dataSources = getDataSources(year);
+  // const dataSources = wildlifeRangeDataSources;
 
   // Populate dropdown in sidebar with years from 1950
   const startYear = 1950;
