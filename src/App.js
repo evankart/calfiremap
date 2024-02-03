@@ -269,6 +269,7 @@ function App() {
 
     // Logic for updating year selected
     if (e.target) {
+      console.log(e.target)
       const targetId = e.target.id;
       if (targetId === "-") {
         newYear = year - 1;
