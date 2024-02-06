@@ -2,9 +2,9 @@ import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "!mapbox-gl"; //eslint-disable-line import/no-webpack-loader-syntax
 import { simplify } from "simplify-geojson";
 import { BounceLoader } from "react-spinners";
-import Menu from "./components/Menu.js";
+import MenuBar from "./components/MenuBar.js";
 import Year from "./components/Year.js";
-import { getDataSources } from "./data/dataSources.js";
+// import fireData from "./data/dataSources.js";
 import {
   queryWildfiresByYear,
   wildlifeRangeDataSources,
@@ -269,7 +269,7 @@ function App() {
 
     // Logic for updating year selected
     if (e.target) {
-      console.log(e.target)
+      console.log(e.target);
       const targetId = e.target.id;
       if (targetId === "-") {
         newYear = year - 1;
@@ -334,7 +334,7 @@ function App() {
 
       <Year year={year} years={years} handleYearChange={handleYearChange} />
 
-      <Menu
+      <MenuBar
         year={year}
         setYear={setYear}
         years={years}
@@ -344,6 +344,7 @@ function App() {
         lng={lng}
         zoom={zoom}
         map={map}
+        wildlifeRangeDataSources={wildlifeRangeDataSources}
       />
 
       <div ref={mapContainer} className="map-container" />
