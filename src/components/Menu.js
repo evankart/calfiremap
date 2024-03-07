@@ -36,13 +36,13 @@ const Menu = ({
   //   // }, 2000);
   // }
 
-  function stopAnimation() {
-    console.log("stop animation");
-    if (animationInterval.current) {
-      clearInterval(animationInterval.current);
-      animationInterval.current = null;
-    }
-  }
+  // function stopAnimation() {
+  //   console.log("stop animation");
+  //   if (animationInterval.current) {
+  //     clearInterval(animationInterval.current);
+  //     animationInterval.current = null;
+  //   }
+  // }
 
   return (
     <div>
