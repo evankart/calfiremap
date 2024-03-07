@@ -7,7 +7,7 @@ import Year from "./components/Year.js";
 import { getDataSources } from "./data/dataSources.js";
 import {
   queryWildfiresByYear,
-  wildlifeRangeDataSources,
+  // wildlifeRangeDataSources,
 } from "./data/dataSources.js";
 
 // Index of fire causes values
@@ -35,8 +35,8 @@ const FIRE_CAUSES = {
 
 function App() {
   mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_API_KEY;
-  const URBAN_AREA_COLOR = "#5b8fcf";
-  const FIRE_AREA_COLOR = "#ff601c";
+  // const URBAN_AREA_COLOR = "#5b8fcf";
+  // const FIRE_AREA_COLOR = "#ff601c";
   const mapContainer = useRef(null);
   const map = useRef(null);
 

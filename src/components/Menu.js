@@ -12,29 +12,29 @@ const Menu = ({
 }) => {
   const animationInterval = useRef(null);
 
-  function animateMap() {
-    console.log("animate map");
-    let newYear = year;
-    console.log(map);
-    let count = 10;
-    while (count > 0) {
-      newYear -= 1;
-      console.log(newYear);
-      setYear(newYear);
-      handleYearChange(newYear);
-      map.current.once("idle", () => {
-        console.log("map idle");
-      });
-      count -= 1;
-    }
+  // function animateMap() {
+  //   console.log("animate map");
+  //   let newYear = year;
+  //   console.log(map);
+  //   let count = 10;
+  //   while (count > 0) {
+  //     newYear -= 1;
+  //     console.log(newYear);
+  //     setYear(newYear);
+  //     handleYearChange(newYear);
+  //     map.current.once("idle", () => {
+  //       console.log("map idle");
+  //     });
+  //     count -= 1;
+  //   }
 
-    // animationInterval.current = setInterval(() => {
-    //   newYear -= 1;
-    //   console.log(newYear);
-    //   setYear(newYear);
-    //   handleYearChange(newYear);
-    // }, 2000);
-  }
+  //   // animationInterval.current = setInterval(() => {
+  //   //   newYear -= 1;
+  //   //   console.log(newYear);
+  //   //   setYear(newYear);
+  //   //   handleYearChange(newYear);
+  //   // }, 2000);
+  // }
 
   function stopAnimation() {
     console.log("stop animation");
