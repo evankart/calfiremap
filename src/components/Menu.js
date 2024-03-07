@@ -2,15 +2,15 @@ import { useRef } from "react";
 
 const Menu = ({
   year,
-  setYear,
-  handleYearChange,
+  // setYear,
+  // handleYearChange,
   acresBurned,
   lat,
   lng,
   zoom,
-  map,
+  // map,
 }) => {
-  const animationInterval = useRef(null);
+  // const animationInterval = useRef(null);
 
   // function animateMap() {
   //   console.log("animate map");
