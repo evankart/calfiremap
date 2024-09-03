@@ -4,7 +4,7 @@ const Button = ({ btnText, btnId, handleYearChange }) => {
       <button
         id={btnId}
         onClick={(e) => {
-          handleYearChange(e);
+          handleYearChange(e)
         }}
         style={{
           color: "rgba(3,42,100, 0.7)",
@@ -14,7 +14,7 @@ const Button = ({ btnText, btnId, handleYearChange }) => {
         {btnText}
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default Button;
+export default Button

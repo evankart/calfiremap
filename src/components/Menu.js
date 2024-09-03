@@ -1,48 +1,10 @@
-// import { useRef } from "react";
-
 const Menu = ({
   year,
-  // setYear,
-  // handleYearChange,
   acresBurned,
   lat,
   lng,
   zoom,
-  // map,
 }) => {
-  // const animationInterval = useRef(null);
-
-  // function animateMap() {
-  //   console.log("animate map");
-  //   let newYear = year;
-  //   console.log(map);
-  //   let count = 10;
-  //   while (count > 0) {
-  //     newYear -= 1;
-  //     console.log(newYear);
-  //     setYear(newYear);
-  //     handleYearChange(newYear);
-  //     map.current.once("idle", () => {
-  //       console.log("map idle");
-  //     });
-  //     count -= 1;
-  //   }
-
-  //   // animationInterval.current = setInterval(() => {
-  //   //   newYear -= 1;
-  //   //   console.log(newYear);
-  //   //   setYear(newYear);
-  //   //   handleYearChange(newYear);
-  //   // }, 2000);
-  // }
-
-  // function stopAnimation() {
-  //   console.log("stop animation");
-  //   if (animationInterval.current) {
-  //     clearInterval(animationInterval.current);
-  //     animationInterval.current = null;
-  //   }
-  // }
 
   return (
     <div>
@@ -65,11 +27,9 @@ const Menu = ({
           </a>
           .
         </div>
-        {/* <button onClick={animateMap}>Animate Map</button>
-        <button onClick={stopAnimation}>Stop Animation</button> */}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Menu;
+export default Menu

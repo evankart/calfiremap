@@ -1,4 +1,4 @@
-import Button from "../components/Button";
+import Button from "../components/Button"
 const Year = ({ year, years, handleYearChange }) => {
   return (
     <div className="d-flex justify-content-start ">
@@ -8,14 +8,12 @@ const Year = ({ year, years, handleYearChange }) => {
           backgroundColor: "rgba(35, 55, 75,0.1)",
         }}
       >
-        {/* Decrease year by one */}
         <Button btnText="&lt;" btnId="-" handleYearChange={handleYearChange} />
 
-        {/* dropdown for selecting the year */}
         <select
           id="year"
           onChange={(e) => {
-            handleYearChange(e);
+            handleYearChange(e)
           }}
           value={year}
           style={{
@@ -31,11 +29,10 @@ const Year = ({ year, years, handleYearChange }) => {
           ))}
         </select>
 
-        {/* Increase year by one */}
         <Button btnText="&gt;" btnId="+" handleYearChange={handleYearChange} />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Year;
+export default Year

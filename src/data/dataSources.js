@@ -1,4 +1,3 @@
-// Creates query link for wildfire data for a given year and exports to App.js
 export const queryWildfiresByYear = (year) => {
   return `https://services1.arcgis.com/jUJYIo9tSA7EHvfZ/arcgis/rest/services/California_Fire_Perimeters/FeatureServer/2/query?where=YEAR_=${year}&outFields=*&geometryType=esriGeometryPolygon&f=geojson`;
 };
@@ -782,7 +781,6 @@ const dataSlugs = [
   "coast-mole-range-predicted-habitat-cwhr-m017-ds2476",
 ];
 
-// list of data sources used to add map layers
 export const getDataSources = (year) => [
   {
     url: "https://docs.mapbox.com/mapbox-gl-js/assets/ne_50m_urban_areas.geojson",
@@ -813,7 +811,6 @@ dataSlugs.forEach((slug) => {
     filter: null,
   });
 });
-console.log(wildlifeRangeDataSources);
 export { wildlifeRangeDataSources };
 
 /*
