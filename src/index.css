@@ -17,14 +17,58 @@ code {
 }
 
 .sidebar {
-  background-color: rgb(35 55 75 / 90%);
-  /* color: #fff; */
-  /* padding: 6px 12px; */
-  /* font-family: monospace; */
-  /* z-index: 1; */
-  /* position: absolute; */
-  /* bottom: 30px;
-  left: 10px; */
-  /* margin: 12px; */
-  /* border-radius: 4px; */
+  background-color: #f8f8f8;
+  color: #23374b;
+  padding: 10px 20px;
+  z-index: 1;
+  position: absolute;
+  bottom: 30px;
+  left: 10px; 
+  margin: 12px;
+  border-radius: 12px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 6px;
+
+  a {
+    color: #23374b;
+  }
+
+  .lat-lng {
+    font-size: 0.85em;
+    margin: 12px 0 0 0;
+    color: #666
+  }
+}
+
+.popup-container {
+  padding: 8px;
+  font-family: 'Roboto', sans-serif;
+
+  p {
+    font-size: 1.1em;
+    margin: 0;
+  }
+
+  h3 {
+    font-size: 1.4em;
+    width: 100%;
+  }
+
+  h4 {
+    font-size: 1.1em;
+    color: #777;
+  }
+}
+
+.mapboxgl-popup-content {
+  border-radius: 12px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  min-width: 250px;
+}
+
+.year-dropdown {
+  font-size: 1em !important;
+}
+
+option {
+  font-size: 1em !important;
 }

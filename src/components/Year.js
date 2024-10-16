@@ -18,12 +18,12 @@ const Year = ({ year, years, handleYearChange }) => {
           value={year}
           style={{
             color: "rgba(3,42,100, 0.7)",
-            fontSize: "2.5rem",
+            fontSize: "2.5em",
           }}
           className="bg-light fw-bold rounded-3 border-0 px-2 mx-2"
         >
           {years.map((year, index) => (
-            <option key={index} value={year}>
+            <option className="year-dropdown" style={{fontSize: "1em"}} key={index} value={year}>
               {year}
             </option>
           ))}

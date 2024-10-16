@@ -1,6 +1,8 @@
 import React, { useRef, useEffect, useState } from "react"
 import mapboxgl from "mapbox-gl"
+import * as turf from '@turf/turf';
 import "mapbox-gl/dist/mapbox-gl.css"
+import "./index.css"
 import { BounceLoader } from "react-spinners"
 import Menu from "./components/Menu.js"
 import Year from "./components/Year.js"
@@ -56,7 +58,7 @@ function App() {
   const [acresBurned, setAcresBurned] = useState(0)
 
   const startYear = 1950
-  const currentYear = new Date().getFullYear()
+  const currentYear = new Date().getFullYear() - 1
   const years = Array.from(
     { length: currentYear - startYear + 1 },
     (_, i) => currentYear - i
@@ -124,13 +126,16 @@ function App() {
     popup
       .setLngLat([e.lngLat.lng.toFixed(6), e.lngLat.lat.toFixed(6)])
       .setHTML(
-        `<h3>${FIRE_NAME} FIRE</h3>
-           <h4>
-             ${ALARM_DATE} - ${CONT_DATE}
-           </h4>
-           <div>Acres Burned: ${ACRES_BURNED}</div>
-           <div>Cause: ${FIRE_CAUSE}</div>
-         `
+        `
+        <div class="popup-container">
+          <h3><strong>${FIRE_NAME} FIRE</strong></h3>
+          <h4>${ALARM_DATE} - ${CONT_DATE}</h4>
+          <p>
+            <strong>Acres Burned:</strong> ${ACRES_BURNED}<br>
+            <strong>Cause:</strong> ${FIRE_CAUSE}
+          </p>
+        </div> 
+           `
       )
       .addTo(map.current)
   }
@@ -160,6 +165,8 @@ function App() {
       zoom: zoom,
     })
 
+    map.current.addControl(new mapboxgl.NavigationControl());
+
     map.current.on("style.load", () => {
 
       // Loops through dataSources array and adds all layers to map
@@ -187,10 +194,18 @@ function App() {
       refreshAcres()
     })
 
+    map.current.on("click", "cal-fires-fill", zoomToFire)
     map.current.on("move", handleMapMove)
     map.current.on("mouseenter", "cal-fires-fill", handleMouseEnter)
     map.current.on("mouseleave", "cal-fires-fill", handleMouseLeave)
   })
+
+  function zoomToFire(e) {
+    const bbox = turf.bbox(e.features[0])
+    map.current.fitBounds(bbox, {
+      padding: { top: 50, bottom: 50, left: 50, right: 50 }, 
+    });
+  }
 
   async function fetchFullData() {
     await fetch(
@@ -216,7 +231,7 @@ function App() {
       } else if (targetId === "+") {
         newYear = year + 1
       } else if (targetId === "year") {
-        newYear = e.target.value
+        newYear = Number(e.target.value)
       }
     } else {
       newYear = e
@@ -231,7 +246,7 @@ function App() {
 
     map.current.addSource("cal-fires", {
       type: "geojson",
-      data: queryWildfiresByYear(year),
+      data: queryWildfiresByYear(newYear),
     })
 
     map.current.addLayer({
