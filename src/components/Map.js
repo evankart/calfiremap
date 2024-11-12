@@ -296,7 +296,7 @@ const Map = () => {
 
     return (
     <div className="position-relative">
-        <div className="mb-3 pt-2 position-absolute top-0 end-0 me-5 mt-1 z-1 w-25">
+        <div className="mb-3 pt-2 position-absolute top-0 end-0 me-5 mt-1 z-1 w-25 d-none d-sm-block">
           <SearchBox
               accessToken={process.env.REACT_APP_MAPBOX_API_KEY}
               options={{ language: 'en', country: 'US'}}

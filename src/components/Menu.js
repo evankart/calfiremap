@@ -1,7 +1,7 @@
 const Menu = (props) => {
   return (
     <div>
-      <div className="sidebar z-1 position-absolute bottom-0 mb-5 rounded-2 fs-6 px-4 py-3 mx-3">
+      <div className="sidebar z-1 position-absolute mb-5 rounded-2 fs-6 px-4 py-3 mx-3">
         <div className="fs-6 mb-2">
           <strong>{props.acresBurned == 0 ? "" : props.acresBurned}</strong> Acres Burned in {props.year}
         </div>
