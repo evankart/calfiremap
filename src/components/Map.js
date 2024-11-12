@@ -36,6 +36,7 @@ const Map = () => {
     const [year, setYear] = useState(2020)
     const [loading, setLoading] = useState(true)
     const [acresBurned, setAcresBurned] = useState(0)
+    const [dataCache, setDataCache] = useState({});
   
     const startYear = 1950
     const currentYear = new Date().getFullYear()
@@ -43,6 +44,23 @@ const Map = () => {
       { length: currentYear - startYear},
       (_, i) => currentYear -1 - i
     )
+
+    useEffect(() => {
+      // Preload full dataset
+      const preloadData = async () => {
+        const cache = {};
+        for (let year = currentYear; year >= startYear; year--) {
+          const URL = await queryWildfiresByYear(year);
+          await fetch(URL)
+            .then((response) => response.json())
+            .then((data) => {
+              cache[year] = data;
+              setDataCache(cache);
+            })
+        }
+      };
+      preloadData();
+    }, []);
   
     function refreshAcres() {
       let fireArray = []
@@ -158,7 +176,7 @@ const Map = () => {
   
         map.current.addSource("cal-fires", {
           type: "geojson",
-          data: queryWildfiresByYear(year),
+          data: dataCache[year] || queryWildfiresByYear(year),
         })
   
         map.current.addLayer({
@@ -236,7 +254,7 @@ const Map = () => {
   
       map.current.addSource("cal-fires", {
         type: "geojson",
-        data: queryWildfiresByYear(newYear),
+        data: dataCache[newYear] || queryWildfiresByYear(newYear),
       })
   
       map.current.addLayer({
