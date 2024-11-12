@@ -1,16 +1,9 @@
-const Menu = ({
-  year,
-  acresBurned,
-  lat,
-  lng,
-  zoom,
-}) => {
-
+const Menu = (props) => {
   return (
     <div>
       <div className="sidebar z-1 position-absolute bottom-0 mb-5 rounded-2 fs-6 px-4 py-3 mx-3">
         <div className="fs-6 mb-2">
-          <strong>{acresBurned}</strong> Acres Burned in {year}
+          <strong>{props.acresBurned == 0 ? "" : props.acresBurned}</strong> Acres Burned in {props.year}
         </div>
 
         <div className="fs-6">
@@ -25,7 +18,7 @@ const Menu = ({
         </div>
 
         <div className="text-end lat-lng">
-          Lng: {lng} | Lat: {lat} | Zoom: {zoom}
+          Lng: {props.lng} | Lat: {props.lat} | Zoom: {props.zoom}
         </div>
       </div>
     </div>
