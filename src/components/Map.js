@@ -33,7 +33,7 @@ const Map = () => {
     const [lng, setLng] = useState(initialLng)
     const [lat, setLat] = useState(initialLat)
     const [zoom, setZoom] = useState(initialZoom)
-    const [year, setYear] = useState(2020)
+    const [year, setYear] = useState(2023)
     const [loading, setLoading] = useState(true)
     const [acresBurned, setAcresBurned] = useState(0)
     const [dataCache, setDataCache] = useState({});
@@ -49,32 +49,42 @@ const Map = () => {
       // Preload full dataset
       const preloadData = async () => {
         const cache = {};
-        for (let year = currentYear; year >= startYear; year--) {
+        for (let year = currentYear; year >= currentYear - 10; year--) {
           const URL = await queryWildfiresByYear(year);
           await fetch(URL)
             .then((response) => response.json())
             .then((data) => {
               cache[year] = data;
               setDataCache(cache);
+              if (year === currentYear - 1) {
+                refreshAcres(data);
+              }
             })
         }
       };
       preloadData();
     }, []);
+
+    useEffect(() => {
+      refreshAcres(dataCache[year])
+    }, [year])
   
-    function refreshAcres() {
+    function refreshAcres(data) {
+      if (!data) return
+      else if (!data.features) data = map.current.querySourceFeatures("cal-fires")
+
+      console.log(data)
       let fireArray = []
-      let allFeatures = map.current.querySourceFeatures("cal-fires")
-      setAcresBurned('')
       let acresBurnedCount = 0
-  
-      allFeatures.forEach((feature) => {
+      setAcresBurned('')
+      
+      data.features.forEach((feature) => {
         if (!fireArray.includes(feature.properties.FIRE_NAME)) {
           fireArray.push(feature.properties.FIRE_NAME)
           acresBurnedCount += feature.properties.GIS_ACRES
         }
       })
-  
+
       acresBurnedCount = acresBurnedCount.toLocaleString(undefined, {
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,
@@ -296,7 +306,7 @@ const Map = () => {
 
     return (
     <div className="position-relative">
-        <div className="mb-3 pt-2 position-absolute top-0 end-0 me-5 mt-1 z-1 w-25 d-none d-sm-block">
+        <div className="mb-3 pt-1 position-absolute top-0 end-0 me-5 mt-1 z-1 w-25 d-none d-sm-block">
           <SearchBox
               accessToken={process.env.REACT_APP_MAPBOX_API_KEY}
               options={{ language: 'en', country: 'US'}}
