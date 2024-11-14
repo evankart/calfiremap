@@ -1,7 +1,3 @@
-export const queryWildfiresByYear = (year) => {
-  return `https://services1.arcgis.com/jUJYIo9tSA7EHvfZ/arcgis/rest/services/California_Fire_Perimeters/FeatureServer/2/query?where=YEAR_=${year}&outFields=*&geometryType=esriGeometryPolygon&f=geojson`;
-};
-
 const dataSlugs = [
   "acorn-woodpecker-range-cwhr-b296-ds1543",
   "fisher-range-cwhr-m155-ds1938",

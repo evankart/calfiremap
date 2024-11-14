@@ -1,22 +1,11 @@
 const Menu = (props) => {
   return (
     <div>
-      <div className="sidebar z-1 position-absolute mb-5 rounded-2 fs-6 px-4 py-3 mx-3">
-        <div className="fs-6 mb-2">
-          <strong>{props.acresBurned == 0 ? "" : props.acresBurned}</strong> Acres Burned in {props.year}
-        </div>
-
-        <div className="fs-6">
-          {" "}
+      <div className="sidebar z-3 position-absolute mb-5 rounded-2 fs-6 px-4 py-3 mx-4 bottom-0 bg-white">
           Data provided by the{" "}
-          <a
-            href="https://gis.data.cnra.ca.gov/datasets/CALFIRE-Forestry::california-fire-perimeters-1950/about"
-          >
-            California Department of Forestry and Fire Protection
-          </a>
-          .
-        </div>
-
+          <a href="https://gis.data.ca.gov/datasets/CALFIRE-Forestry::california-historical-fire-perimeters/about?layer=2" target="_blank">
+              California Department of Forestry and Fire Protection
+          </a>.
         <div className="text-end lat-lng">
           Lng: {props.lng} | Lat: {props.lat} | Zoom: {props.zoom}
         </div>

@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: #23374b;
 }
 
 code {
@@ -14,19 +15,13 @@ code {
 
 .map-container {
   height: 100vh;
+  width: 100vw;
 }
 
 .sidebar {
-  background-color: #f8f8f8;
-  color: #23374b;
-  padding: 10px 20px;
-  z-index: 1;
-  position: absolute;
-  bottom: 30px;
-  left: 10px; 
-  margin: 12px;
-  border-radius: 12px;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 6px;
+  min-height: 100px;
+  background-color: #f8f8f8;
 
   a {
     color: #23374b;
@@ -37,6 +32,10 @@ code {
     margin: 12px 0 0 0;
     color: #666
   }
+}
+
+.chart {
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 6px;
 }
 
 .popup-container {
@@ -71,4 +70,8 @@ code {
 
 option {
   font-size: 1em !important;
+}
+
+img.leaflet-tile {
+  image-rendering: pixelated;
 }

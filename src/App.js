@@ -1,11 +1,9 @@
-import Map from "./components/Map.js"
+import LeafletMap from "./components/LeafletMap.js"
 
 function App() {
 
   return (
-    <div>
-      <Map />
-    </div>
+    <LeafletMap />
   )
 }
 
