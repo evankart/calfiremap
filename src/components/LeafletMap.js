@@ -161,14 +161,21 @@ const LeafletMap = () => {
         })
         
         const popupContent = `
-          <div class="popup-container">
-            <h3><strong>${FIRE_NAME} FIRE</strong></h3>
-            <h4>${ALARM_DATE} - ${CONT_DATE}</h4>
-            <p>
-              <strong>Acres Burned:</strong> ${ACRES_BURNED}<br>
-              <strong>Cause:</strong> ${FIRE_CAUSE}
-            </p>
-            ${year >= 2013 ? `<p>${year} CAL FIRE <a href="https://www.fire.ca.gov/incidents/${year}" target="_blank">Incident Archive</a></p>` : ''}
+          <div class="popup-container card shadow border-none" style="width: 100%; height: 100%; margin: 0; padding: 0;">
+            <div class="card-header bg-danger text-white text-center fs-6 fw-bold">
+              <h3 class="card-title mb-0">${FIRE_NAME} FIRE</h3>
+            </div>
+            <div class="card-body p-3">
+              <h4 class="card-subtitle text-muted mb-3 text-center"><i class="bi bi-calendar-event"></i> ${ALARM_DATE} - ${CONT_DATE}</h4>
+              <p class="card-text mb-2">
+                <span class="badge ">Acres Burned</span> ${ACRES_BURNED}<br>
+                <span class="badge ">Cause</span> ${FIRE_CAUSE}
+              </p>
+              ${year >= 2013 ? `
+              <div class="card-text card-link text-center mt-3">
+                ${year} CAL FIRE<a class="fw-bold ms-1" href="https://www.fire.ca.gov/incidents/${year}" target="_blank">Incident Archive</a>
+              </div>` : ''}
+            </div>
           </div>
         `;
   
