@@ -14,6 +14,8 @@ const LeafletMap = () => {
   const mapContainer = useRef(null);
   const map = useRef(null);
   const geojsonRef = useRef(null);
+  const CALFIRE_BASE_URL = "https://services1.arcgis.com/jUJYIo9tSA7EHvfZ/arcgis/rest/services/California_Historic_Fire_Perimeters/FeatureServer/0"
+  // const CALFIRE_BASE_URL = "https://services1.arcgis.com/jUJYIo9tSA7EHvfZ/arcgis/rest/services/California_Fire_Perimeters/FeatureServer/2"
 
   const [lng, setLng] = useState(-118.858224)
   const [lat, setLat] = useState(37.316818)
@@ -37,7 +39,7 @@ const LeafletMap = () => {
     }
     
     async function fetchAcresBurnedByYear() {
-      const baseUrl = `https://services1.arcgis.com/jUJYIo9tSA7EHvfZ/arcgis/rest/services/California_Fire_Perimeters/FeatureServer/2/query?where=YEAR_>=1950&outFields=YEAR_,GIS_ACRES&returnGeometry=false&f=geojson`;
+      const baseUrl = `${CALFIRE_BASE_URL}/query?where=YEAR_>=1950&outFields=YEAR_,GIS_ACRES&returnGeometry=false&f=geojson`;
       let resultOffset = 0;
       const pageSize = 2000;
       const acresByYear = {};
@@ -246,7 +248,7 @@ const LeafletMap = () => {
   }
 
   const queryWildfiresByYear = (year) => {
-    return `https://services1.arcgis.com/jUJYIo9tSA7EHvfZ/arcgis/rest/services/California_Fire_Perimeters/FeatureServer/2/query?where=YEAR_=${year}&outFields=*&geometryType=esriGeometryPolygon&f=geojson`;
+    return `${CALFIRE_BASE_URL}/query?where=YEAR_=${year}&outFields=*&geometryType=esriGeometryPolygon&f=geojson`;
   };
   
   return (
